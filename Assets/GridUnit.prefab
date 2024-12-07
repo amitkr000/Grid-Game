@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 903936173154070127}
   m_Layer: 0
   m_Name: GridUnit
-  m_TagString: Untagged
+  m_TagString: Grid
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -119,3 +119,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unit: {x: 0, y: 0}
+  normalMaterial: {fileID: 0}
+  hoverMaterial: {fileID: 0}
