@@ -10,6 +10,20 @@ public class InputManager : MonoBehaviour
     public static event Action<Transform> OnMouseHover;
     public static event Action<Transform> OnLeftMouseDown;
 
+    public GameObject player;
+    public GameObject[] enemies;
+
+    public static InputManager instance;
+
+    void Awake()
+    {
+        if(instance != null && instance != this)
+        {
+            Destroy(gameObject);
+        }
+        instance = this;
+    }
+
     void Update()
     {
         MouseHover();
@@ -37,8 +51,40 @@ public class InputManager : MonoBehaviour
             Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
             if(Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, ~layerMask))
             {
-                OnLeftMouseDown?.Invoke(hit.transform);
+                // OnLeftMouseDown?.Invoke(hit.transform);
+                if(player == null)
+                {
+                    Debug.Log("Seraching");
+                    player = GameObject.FindGameObjectWithTag("Player");
+                    enemies = GameObject.FindGameObjectsWithTag("Enemy");
+                }
+
+                Debug.Log(player);
+                //Perform player and enemies movement
+                PlayerMovement(player, hit.transform);
+                
             }
         }
     }
+
+    void PlayerMovement(GameObject playerObject, Transform targetGridUnitTransform)
+    {
+        if(playerObject.GetComponent<Player>().FindPathNMove(targetGridUnitTransform))
+        {
+            GridUnit playerCurrentLocation = targetGridUnitTransform.GetComponent<GridUnit>();
+            // Now move enemies toward player
+            // MoveEnemies(enemies, playerCurrentLocation);
+        }
+    }
+
+    public void MoveEnemies(GameObject[] enemies, GridUnit playerGridUnit)
+    {
+        player.GetComponent<Player>().canPlayerMove = false;
+        foreach(GameObject enemy in enemies)
+        {
+            enemy.GetComponent<AI>().MoveTowardsPlayer(playerGridUnit);
+        }
+
+    }
+
 }

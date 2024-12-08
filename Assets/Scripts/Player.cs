@@ -8,16 +8,11 @@ public class Player : MonoBehaviour
     public GridUnit targetGrid;
     public Grid grid;
     public int speed;
+    public bool canPlayerMove = true;
 
-
-    public void OnEnable()
+    void Start()
     {
-        InputManager.OnLeftMouseDown += FindPathNMove;
-    }
-
-    public void OnDisable()
-    {
-        InputManager.OnLeftMouseDown -= FindPathNMove;
+        grid = GameObject.FindGameObjectWithTag("Grid").GetComponent<Grid>();
     }
 
     GridUnit GetCurrentLocationOnGrid()
@@ -30,7 +25,7 @@ public class Player : MonoBehaviour
         return null;
     }
 
-    void FindPathNMove(Transform targetGridUnitTransform)
+    public bool FindPathNMove(Transform targetGridUnitTransform)
     {
         targetGrid = targetGridUnitTransform.GetComponent<GridUnit>();
         locationOnGrid = GetCurrentLocationOnGrid();
@@ -42,8 +37,10 @@ public class Player : MonoBehaviour
             if(path != null)
             {
                 StartCoroutine(PlayerMovement(path));
+                return true;
             }
         }
+        return false;
     }
 
     IEnumerator PlayerMovement(List<GridUnit> path)
@@ -61,6 +58,7 @@ public class Player : MonoBehaviour
             }
             
         }
+        InputManager.instance.MoveEnemies(InputManager.instance.enemies, GetCurrentLocationOnGrid());
 
         Debug.Log("Coroutine Ends");
     }
