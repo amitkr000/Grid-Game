@@ -20,7 +20,7 @@ public class SpawnGridUnits : MonoBehaviour
     // Spawn gridUnitObject Gameobjects to make a Grid
     void GenerateGrid()
     {
-        Grid.grid = new GridUnit[gridSize.x, gridSize.y];
+        Grid.instance.grid = new GridUnit[gridSize.x, gridSize.y];
 
         float halfGridSizeX = gridSize.x /2;
         float halfGridSizeY = gridSize.y /2;
@@ -34,14 +34,14 @@ public class SpawnGridUnits : MonoBehaviour
                 GridUnit gridUnit = unitObject.GetComponent<GridUnit>();
                 gridUnit.cell = new Vector2Int(i, j);
                 gridUnit.isWalkable = true;
-                Grid.grid[i,j] = gridUnit;
+                Grid.instance.grid[i,j] = gridUnit;
             }
         }
     }
 
     void SpawnPlayer()
     {
-        Vector3 position = Grid.grid[0,0].transform.position + new Vector3(0, 1.5f, 0);
+        Vector3 position = Grid.instance.grid[0,0].transform.position + new Vector3(0, 1.5f, 0);
         Instantiate(playerPrefab, position, Quaternion.identity);
     }
 
@@ -54,9 +54,9 @@ public class SpawnGridUnits : MonoBehaviour
                 int x = Random.Range(1,9);
                 int y = Random.Range(1,9);
 
-                if(Grid.grid[x,y].isWalkable)
+                if(Grid.instance.grid[x,y].isWalkable)
                 {
-                    Vector3 position = Grid.grid[x,y].transform.position + new Vector3(0, 1.5f, 0);
+                    Vector3 position = Grid.instance.grid[x,y].transform.position + new Vector3(0, 1.5f, 0);
                     Instantiate(enemyPrefab, position, Quaternion.identity);
                     break;
                 }

@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface AI
 {
-    public void MoveTowardsPlayer(GridUnit playerGridUnit);
+    public IEnumerator MoveTowardsPlayer(GridUnit playerGridUnit);
 }

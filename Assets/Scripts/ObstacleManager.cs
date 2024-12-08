@@ -21,7 +21,7 @@ public class ObstacleManager : MonoBehaviour
                 if(obstacleData.ObstacleOnGrid[i*10+j])
                 {
                     Instantiate(obstacleData.obstacleObject, new Vector3(i - 5, 1, j - 5), Quaternion.identity);
-                    Grid.grid[i,j].isWalkable = false;
+                    Grid.instance.grid[i,j].isWalkable = false;
                 }
             }
         }

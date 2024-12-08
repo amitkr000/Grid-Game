@@ -5,7 +5,19 @@ using UnityEngine;
 public class Grid : MonoBehaviour
 {
     // Stores the Grid Info
-    public static GridUnit[,] grid;
+    public GridUnit[,] grid;
+
+    //Singleton
+    public static Grid instance;
+
+    void Awake()
+    {
+        if(instance != null && instance != this)
+        {
+            Destroy(gameObject);
+        }
+        instance = this;
+    }
 
     // To get a gridUnit given (X,y) location on Grid
     public GridUnit GetGridUnit(int x, int y)

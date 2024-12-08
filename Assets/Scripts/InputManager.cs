@@ -12,6 +12,8 @@ public class InputManager : MonoBehaviour
 
     public GameObject player;
     public GameObject[] enemies;
+    public int speed = 5;
+    public GridUnit targetUnit;
 
     public static InputManager instance;
 
@@ -61,30 +63,77 @@ public class InputManager : MonoBehaviour
 
                 Debug.Log(player);
                 //Perform player and enemies movement
-                PlayerMovement(player, hit.transform);
+                targetUnit = hit.transform.GetComponent<GridUnit>();
+                if(player.GetComponent<Player>().canPlayerMove)
+                {
+                    StartCoroutine(MoveSequence());
+                }
+                // List<GridUnit> playerPath = player.GetComponent<Player>().GetPathToTarget(hit.transform.GetComponent<GridUnit>());
+                // if(playerPath != null)
+                // {
+                //     StartCoroutine(MoveToPositon(player.transform, playerPath));
+                // }
+                
                 
             }
         }
     }
 
-    void PlayerMovement(GameObject playerObject, Transform targetGridUnitTransform)
+    IEnumerator MoveSequence()
     {
-        if(playerObject.GetComponent<Player>().FindPathNMove(targetGridUnitTransform))
+        List<GridUnit> playerPath = player.GetComponent<Player>().GetPathToTarget(targetUnit);
+        if(playerPath != null)
         {
-            GridUnit playerCurrentLocation = targetGridUnitTransform.GetComponent<GridUnit>();
-            // Now move enemies toward player
-            // MoveEnemies(enemies, playerCurrentLocation);
+            yield return MoveToPositon(player.transform, playerPath);
+
+            player.GetComponent<Player>().canPlayerMove = false;
+            //Move each enemy
+            foreach(GameObject enemy in enemies)
+            {
+                yield return StartCoroutine(enemy.GetComponent<AI>().MoveTowardsPlayer(targetUnit));
+            }
         }
+        yield return null;
+        player.GetComponent<Player>().canPlayerMove = true;
     }
 
-    public void MoveEnemies(GameObject[] enemies, GridUnit playerGridUnit)
+    IEnumerator MoveToPositon(Transform objTransform, List<GridUnit> path)
     {
-        player.GetComponent<Player>().canPlayerMove = false;
-        foreach(GameObject enemy in enemies)
+        Debug.Log("Coroutine Starts");
+
+        for(int i = 0; i < path.Count; i++)
         {
-            enemy.GetComponent<AI>().MoveTowardsPlayer(playerGridUnit);
+            GridUnit nextLocation = path[i];
+            Vector3 nextPosition = new Vector3(nextLocation.transform.position.x, objTransform.position.y, nextLocation.transform.position.z);
+            while(Vector3.Distance(objTransform.position, nextPosition) >= 0.05f)
+            {
+                objTransform.position = Vector3.MoveTowards(objTransform.position, nextPosition, speed*Time.deltaTime);
+                yield return null;
+            }
+            
         }
 
+        Debug.Log("Coroutine Ends");
     }
+
+    // void PlayerMovement(GameObject playerObject, Transform targetGridUnitTransform)
+    // {
+    //     if(playerObject.GetComponent<Player>().FindPathNMove(targetGridUnitTransform))
+    //     {
+    //         GridUnit playerCurrentLocation = targetGridUnitTransform.GetComponent<GridUnit>();
+    //         // Now move enemies toward player
+    //         // MoveEnemies(enemies, playerCurrentLocation);
+    //     }
+    // }
+
+    // public void MoveEnemies(GameObject[] enemies, GridUnit playerGridUnit)
+    // {
+    //     player.GetComponent<Player>().canPlayerMove = false;
+    //     foreach(GameObject enemy in enemies)
+    //     {
+    //         enemy.GetComponent<AI>().MoveTowardsPlayer(playerGridUnit);
+    //     }
+
+    // }
 
 }
