@@ -44,7 +44,7 @@ public class Enemy1 : MonoBehaviour, AI
             {
                 currentUnit.isWalkable = true;
                 // StartCoroutine(MoveOnPath(path));
-                 int step = Mathf.Min(moveStep, path.Count-1);
+                 int step = path.Count - 1;
 
                 for(int i = 0; i < step; i++)
                 {

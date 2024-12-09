@@ -121,6 +121,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveStep: 1
-  speed: 2
-  grid: {fileID: 0}
+  speed: 5
   isMoving: 0
